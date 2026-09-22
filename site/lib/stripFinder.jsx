@@ -70,7 +70,7 @@ let r = [
                 : 'outdoor' === e.place
                   ? 'Outdoors: the IP67 sealed long run COB in 3000K warm, the IP65 CCT COB if you want to adjust warm ↔ cool, or the IP65 RGB COB for full colour.'
                   : 'display' === e.place
-                      ? 'The 23W/m display strip is made in 4000K natural and 5000K crisp, CRI 90+. IP20 — dry indoor cases and shelving.'
+                      ? 'The 23W/m display strip is made in 4000K natural and 5000K crisp, CRI 90+. IP20 for dry cases and shelving, or IP65 where it gets cleaned down.'
                       : '',
     opts: (e) =>
       isCove240(e)
@@ -417,14 +417,16 @@ function h(e) {
       single: o.single,
       dual: o.dual,
       channel: 'required',
-      spec: `24V High Lumen High Colour SMD · ${n}W/m · up to 3800 lumens a metre · 240 LEDs a metre · CRI 90+ · IP20 · 4000K or 5000K · ${o.single}m one feed / ${o.dual}m both ends`,
-      ipTxt: 'IP20 — dry indoor display cases, shelving and joinery',
+      spec: `24V High Lumen High Colour SMD · ${n}W/m · up to 3800 lumens a metre · 240 LEDs a metre · CRI 90+ · 165 lm/W · IP20 or IP65 · 4000K or 5000K · ${o.single}m one feed / ${o.dual}m both ends`,
+      ipTxt: i >= 65 ? 'IP65 — sealed, for cabinets that get wiped or hosed down' : 'IP20 for dry cases and shelving; IP65 grade for cabinets that get cleaned down',
       where: 'Retail display, shelving and joinery — anywhere the goods have to look their real colour',
       teach: [
         `Very bright: up to 3800 lumens a metre from ${n}W/m, 240 LEDs a metre`,
         'CRI 90+ — colours read true, which is the whole point in a display',
-        'Warm, natural or bright white',
+        'Natural 4000K or crisp 5000K',
         'Dotless, so it reads as one line of light rather than a row of dots',
+        'IP20 or IP65 — the sealed grade suits food and retail cabinets that get cleaned',
+        'High efficiency: 165 lumens per watt',
       ],
     };
   }
@@ -440,15 +442,17 @@ function h(e) {
       dual: e ? 35 : 50,
       channel: 'none',
       spec: e
-        ? '240V RGB · IP65 · runs 10–35m · $60 driver included · remote only · no channels'
-        : '240V · IP65 · 3000/4000/6000K or blue · runs 10–50m · $60 driver included · remote only · no channels',
+        ? '240V RGB · IP65 · runs 10–35m · $60 driver included · remote, or smart with the optional gateway · no channels'
+        : '240V · IP65 · 3000/4000/6000K or blue · runs 10–50m · $60 driver included · remote, or smart with the optional module · no channels',
       ipTxt: 'IP65 — fine with dust & splashes',
       where: 'Recessed ceilings — long runs of 10 metres or more',
       teach: [
         '$60 240V driver INCLUDED — powers it straight from mains',
         e ? 'Long runs only: 10–35 metres (RGB)' : 'Long runs only: 10–50 metres — under 10m? Call us',
         e ? 'Full colour from the remote' : 'Fixed colour white — pick warm, natural or cool',
-        "Remote control only — can't be made smart",
+        e
+          ? 'Full colour control and dimming from the remote — add the optional RGB Gateway for smart control'
+          : 'Triac dimmable from the remote — add the optional Smart Dimming module for smart control',
       ],
     };
   }
@@ -538,7 +542,8 @@ function h(e) {
         : t.includes('high lumen')
           ? {
               fam: 'HILUMEN',
-              connector: 3,
+              /* Brochure p5: "no waste (up to 4m)". */
+              connector: 4,
               wpm: wattsPerMetre({ name: t }, 12),
               wpmTxt: `High Lumen SMD · ${wattsPerMetre({ name: t }, 12)}W/m IP65 wet-area strip`,
               single: 5,
@@ -680,7 +685,7 @@ export const STRIP_101 = [
   ['Brightness', 'is lumens — more watts per metre = brighter. Over 150 lumens per watt = very efficient.'],
   [
     'Colour temperature:',
-    '2700K warm & cosy · 4000K natural · 6000K crisp. CCT strip lets you change it; RGB does millions of colours.',
+    '2700K warm & cosy · 3000K warm · 4000K natural · 5500–5700K crisp. CCT strip lets you change it (2700–6000K); RGB does millions of colours.',
   ],
   ['IP rating = water protection:', 'IP20 dry indoors · IP65 steamy bathrooms · IP67 outdoors.'],
   [
@@ -775,7 +780,7 @@ export const buildPackage = function (e, i, r, n = {}) {
       candidates: [e],
     }),
       v.push(
-        `The $60 240V driver powers the strip straight from normal mains power. Long runs only: minimum 10m, up to ${m.single}m on one feed. Recessed ceilings only \xb7 remote-control only \xb7 straight runs, no bends \xb7 no channels.`,
+        `The $60 240V driver powers the strip straight from normal mains power. Long runs only: minimum 10m, up to ${m.single}m on one feed. Recessed ceilings only \xb7 remote control, smart optional \xb7 straight runs, no bends \xb7 no channels.`,
       ),
       u < 10 &&
         v.push(
@@ -856,9 +861,14 @@ export const buildPackage = function (e, i, r, n = {}) {
   }
   let C = (o = d(r, 'remote-control-grp')).length ? o : r.filter((e) => 'remote-control-grp' === e.sku);
   if ('240V' === p) {
+    /* The brochure (p3): "RGB Gateway or Smart Dimming modules to enable
+       Smart Control". The remote comes in the kit; the gateway or module is
+       an optional extra, so it is offered rather than quoted. */
     'smart' === a.control &&
       v.push(
-        "Heads up: 240V strip is REMOTE-control only — it can't be made smart or run from the app. We've included the remote instead.",
+        w
+          ? 'Smart control on 240V RGB is an optional extra: add the RGB Gateway and the strip runs from the app as well as the remote. Ring us and we will add it to the quote.'
+          : 'Smart control on 240V white is an optional extra: add the Smart Dimming module and the strip dims from the app as well as the remote. Ring us and we will add it to the quote.',
       );
     let e = f(C, w ? ['4-zone', 'rgb'] : ['single colour', 'single', 'hand']),
       t = k('remote', C, e);
@@ -866,10 +876,10 @@ export const buildPackage = function (e, i, r, n = {}) {
       key: 'remote',
       product: t,
       qty: 1,
-      sub: `the ONLY way to control 240V strip (${w ? 'colours & dimming' : 'dimming'}) — pick the remote you like`,
+      sub: `controls the 240V strip (${w ? 'colours & dimming' : 'dimming'}) — pick the remote you like${'smart' === a.control ? ' · optional gateway for app control' : ''}`,
       candidates: C,
     }),
-      v.push('No controller box needed (or possible) with 240V strip — the remote does everything.'));
+      v.push('No controller box needed with 240V strip — the remote does everything. Want it on the app? The optional RGB Gateway (colour) or Smart Dimming module (white) adds that.'));
   } else if ('NEON' === m.fam) {
     /* Neon flex runs on Bluetooth from the phone — the brochure: "Bluetooth
        Control (No WiFi required)". No controller box, no remote. */
