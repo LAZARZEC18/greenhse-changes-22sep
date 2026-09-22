@@ -14,6 +14,7 @@ import * as asset from '../../lib/asset';
 import * as finderProductsSlice from '../../store/finderProductsSlice';
 import * as stripFinder from '../../lib/stripFinder';
 import VideosSection from '../../components/catalog/VideosSection';
+import ChannelGuide from '../../components/catalog/ChannelGuide';
 import * as api2 from '../../lib/api';
 function MC() {
   return (
@@ -1408,6 +1409,7 @@ export default function Default() {
           {!x && !d && !j && <CatSections sections={y} renderCard={(e) => <ProductCard key={e.id} product={e} />} />}
         </div>
       </section>
+      <ChannelGuide />
       <VideosSection />
       <W open={e} onClose={() => c(!1)} />
       <JSXStyle id="c6d421133c8c91bd">
