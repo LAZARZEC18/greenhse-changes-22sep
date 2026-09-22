@@ -1305,17 +1305,9 @@ export default function Default() {
                     id: e.id,
                     categoryLabel: 'Strip Lights',
                   });
-                  /* Specialised Display (Magento category 137) carries two
-                     general-purpose dotless COB strips as well as the display
-                     strip, so only display-grade families are shown there.
-                     Fix it at source by unassigning them in Magento; this
-                     keeps the page right in the meantime. */
+                  /* Sections show exactly what Magento assigns to each child
+                     category - Lazar re-ordered them in Magento on 22 Sep. */
                   let visible = a.filter((e) => 4 === e.visibility);
-                  if (/specialised\s+display/i.test(e.name || ''))
-                    visible = visible.filter((p) => {
-                      let fam = (stripFinder.stripFacts(p) || {}).fam;
-                      return 'DISPLAY' === fam || 'MEAT' === fam;
-                    });
                   return {
                     id: `cat-${e.id}`,
                     label: e.name || `Category ${e.id}`,
